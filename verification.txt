@@ -1,0 +1,75 @@
+Memory Room verification - Daniyal Amangeldi, group 2412
+Date: 2026-10-18
+Actual source: C:/Users/aser/Desktop/finalCG/main.cpp
+The harness includes the real source without changing it. GPU screenshots are genuine glReadPixels captures.
+Keyboard mapping tests are synthetic (mock glfwGetKey and direct keyCallback calls); physical keyboard events are not verified.
+Unit fixtures may place the player at test locations; the complete winning route below uses only updatePlayer/updateGame without teleports.
+
+PASS Actual map loads with one start, one exit, three keys and closed border
+PASS Map spawn, keys and exit have expected coordinates
+PASS Spawn is not colliding with walls
+GPU: AMD Radeon(TM) Graphics
+OpenGL: 3.3.14756 Core Profile Context 20.40.32.15 27.20.14032.15001
+
+PASS Actual GLSL compiles and links; VAO/VBO and alpha blend initialize without errors
+PASS Ready state hides the room
+PASS Ready state is immobile and does not run timer
+PASS Space cannot consume flashes in Ready
+PASS Enter begins a visible six-second Memorize phase
+PASS Memorize stays visible/immobile before six seconds; game timer is stopped
+PASS Memorize cannot spend a flash
+PASS After six seconds the game enters dark Playing; timer begins on playing updates
+PASS Every interior board pixel except player is uniform dark: no hidden wall/key/exit geometry leaks
+PASS Real framebuffer removes walls, all three keys and the exit in Playing
+PASS First Space uses one flash and reveals room for 0.5 second
+PASS Flash really redraws wall, all keys and exit in framebuffer
+PASS Held/repeated/repressed Space cannot extend or stack active flash
+PASS Flash remains visible immediately before its 0.5-second deadline
+PASS Flash expires immediately after 0.5 seconds
+PASS Exactly two flashes are available; third press cannot reveal room
+PASS Only Playing updates advance game timer
+PASS Synthetic WASD/arrow mapping key 65
+PASS Synthetic WASD/arrow mapping key 263
+PASS Synthetic WASD/arrow mapping key 68
+PASS Synthetic WASD/arrow mapping key 262
+PASS Synthetic WASD/arrow mapping key 87
+PASS Synthetic WASD/arrow mapping key 265
+PASS Synthetic WASD/arrow mapping key 83
+PASS Synthetic WASD/arrow mapping key 264
+PASS Diagonal normalization keeps total speed at 150 units per second
+PASS Opposing synthetic movement keys cancel
+PASS Continuous pressure against a wall counts one collision and never enters wall
+PASS Releasing input then hitting the wall begins a second collision event
+PASS Substeps prevent tunneling through one-tile wall even with a two-second movement call
+PASS Separate X/Y collision tests allow diagonal sliding along wall
+PASS Outside map is treated as colliding
+PASS Exit is locked with no keys (unit position fixture)
+PASS Key 1 is collected exactly once (unit position fixture)
+PASS Exit stays locked after 1 keys
+PASS Key 2 is collected exactly once (unit position fixture)
+PASS Exit stays locked after 2 keys
+PASS Key 3 is collected exactly once (unit position fixture)
+PASS All three keys unlock exit; Won reveals room and freezes timer
+PASS Won state ignores player movement and flash
+PASS Enter after Won starts a new round
+PASS R reset clears round state, pickups, collisions, timers and flashes
+End-to-end route: UUUURUUUUURRRURRRDDDRRRDRRDDDRRRRRRDDRUUUUUUUU (46 tiles); maximum dt=0.05 seconds.
+Actual end: player=(940,246), gameTime=12.2, collisions=0.
+PASS Continuous 46-tile walk collects each key at expected steps 10, 24 and 37
+PASS Full winning route succeeds through actual movement/game updates without teleports or wall penetration
+PASS Winning route produces elapsed play time consistent with 46 tiles at player speed
+PASS Timer stays frozen after genuine route victory
+PASS Native 1120x800 viewport uses full logical canvas
+PASS Actual resize letterboxes and preserves canvas proportions at 1400x800
+PASS Actual resize letterboxes and preserves canvas proportions at 800x1000
+PASS Zero-size framebuffer avoids draw/division errors
+PASS Synthetic Escape requests window close
+PASS All real GPU rendering and framebuffer captures complete without OpenGL errors
+
+Checks: 55
+Failures: 0
+OVERALL: PASS
+Screenshots: ready.ppm, memorize.ppm, dark.ppm, flash.ppm, won.ppm - genuine 1120x800 framebuffer captures.
+Not verified: physical keyboard events, subjective user play experience or external presentation recording.
+PASS build.bat independently completed with exit 0 using vswhere MSBuild discovery.
+PASS Original EXE startup: alive=True; window=Memory Room - Lights-Out Memory Puzzle; CloseMainWindow=True; natural exit=True; exit code=0; flushed stdout confirms OpenGL initialization; stderr empty=True.

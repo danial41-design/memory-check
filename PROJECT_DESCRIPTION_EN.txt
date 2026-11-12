@@ -1,0 +1,50 @@
+Memory Room: A 2D Lights-Out Memory Puzzle Game Using OpenGL
+Daniyal Amangeldi — Group 2412
+
+PROJECT GOAL
+Memory Room is a small 2D puzzle game that tests spatial memory. The player
+remembers a room, then navigates through it when the room becomes dark.
+The project uses a single fixed map and simple C++ functions.
+
+GAMEPLAY
+Press Enter to begin. The room is visible for six seconds, showing the walls,
+three keys, the starting point, and the exit. Movement is disabled during
+this memorization phase. The room then becomes dark, while the player
+and information panel remain visible.
+
+Use WASD or the arrow keys to move. Invisible walls still block the player.
+Keys are collected automatically when the player approaches them. The exit
+can complete the game only after all three keys have been collected.
+The player has two flashes of light, each lasting half a second. A flash
+briefly reveals the room. Holding Space does not extend the flash.
+
+The panel shows collected keys, remaining flashes, elapsed play time,
+and collision events. Continuous pressure against a wall counts as one
+collision event. On victory, the complete room and results are displayed.
+R restarts the same map and begins a new memorization phase. Escape exits.
+There is no time limit, enemy, or separate losing state.
+
+GRAPHICS AND IMPLEMENTATION
+The program uses C++17, OpenGL 3.3 Core, GLFW, GLAD, and GLSL 330.
+GLFW handles the window and keyboard. GLAD loads OpenGL functions.
+Every visible object is built from colored rectangles, with two triangles
+per rectangle. This includes the walls, floor, player, keys, door,
+interface panels, and a small bitmap font drawn from rectangles.
+
+A dynamic VBO stores vertex positions and RGBA colors. A VAO describes
+the vertex layout. The vertex shader converts logical canvas coordinates
+to OpenGL clip coordinates; the fragment shader outputs the color.
+Alpha blending is used for the overlay panel. A viewport with preserved
+aspect ratio keeps the graphics proportional when the window is resized.
+
+Darkness is implemented by temporarily skipping the drawing of walls,
+floor tiles, keys, and the door. The map remains active for collisions
+and key collection. The player uses square-versus-grid collision checks.
+Movement uses frame time, normalized diagonal input, and small steps.
+
+PROJECT SCOPE AND RUNNING
+The game contains one fixed room, three keys, one exit, and four states:
+Ready, Memorize, Playing, and Won. It uses no game engine or external textures.
+Open MemoryRoom.sln in Visual Studio, select Debug x64, build, and run.
+Alternatively, use run.bat. No command line arguments are required.
+Actual build and runtime verification is recorded separately in verification.txt.
