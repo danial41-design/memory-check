@@ -2,7 +2,7 @@
 
 **Memory Room: A 2D Lights-Out Memory Puzzle Game Using OpenGL**
 
-Daniyal Amangeldi, group 2412
+Daniyal Amangeldi, Sultan Zerkhanov, Ramazan Seilbekov group SE-2412
 
 The player sees a room for six seconds and memorizes its walls, three keys, and exit. Then the room becomes dark. Collect all keys and reach the exit using memory. Two short flashes reveal the room for 0.5 seconds each.
 
