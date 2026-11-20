@@ -26,7 +26,8 @@ const float MEMORIZE_SECONDS=6.0f, FLASH_SECONDS=0.5f;
 const int MAX_FLASHES=2;
 
 
-const char* roomRows[MAP_HEIGHT]={
+const char* levelMaps[][MAP_HEIGHT]={
+  {
     "########################",
     "#......................#",
     "#..1...#..###........E.#",
@@ -41,7 +42,46 @@ const char* roomRows[MAP_HEIGHT]={
     "#.S............#.......#",
     "#......................#",
     "########################"
+  },
+  {
+    "########################",
+    "#.......#.......#....E.#",
+    "#..1....#.......#......#",
+    "#.......#.......#......#",
+    "#...............#......#",
+    "#.......#.......#......#",
+    "#.......#..2....#......#",
+    "#.......#.......#......#",
+    "#.......#.......#......#",
+    "#.......#..............#",
+    "#.......#.......#...3..#",
+    "#.S.....#.......#......#",
+    "#.......#.......#......#",
+    "########################"
+  },
+  {
+    "########################",
+    "#.S....................#",
+    "#.....1................#",
+    "#......................#",
+    "#####################..#",
+    "#......................#",
+    "#....2.................#",
+    "#......................#",
+    "#..#####################",
+    "#......................#",
+    "#...................3..#",
+    "#......................#",
+    "#....................E.#",
+    "########################"
+  }
 };
+const int LEVEL_COUNT=static_cast<int>(sizeof(levelMaps)/sizeof(levelMaps[0]));
+const char* levelNames[]={"FIRST STEPS","CROSSROADS","LONG WAY HOME"};
+static_assert(sizeof(levelNames)/sizeof(levelNames[0])==LEVEL_COUNT,
+              "Each level must have a name.");
+int currentLevel=0;
+const char** roomRows=levelMaps[0];
 
 GameState gameState=Ready;
 std::vector<KeyItem> keys;
@@ -111,6 +151,15 @@ void startGame()
     messageTime=0; impactTime=0; collectedKeys=0;
     flashesRemaining=MAX_FLASHES; collisions=0; wasBlocked=false;
     for (KeyItem& key : keys) key.collected=false;
+}
+bool startLevel(int levelIndex)
+{
+    if (levelIndex<0 || levelIndex>=LEVEL_COUNT) return false;
+    currentLevel=levelIndex;
+    roomRows=levelMaps[currentLevel];
+    if (!loadLevel()) return false;
+    startGame();
+    return true;
 }
 void useFlash()
 {
@@ -327,12 +376,13 @@ void drawPlayer()
 void drawHUD()
 {
     drawText("MEMORY ROOM",56,23,3.0f,textColor);
-    drawText("LOOK. REMEMBER. FIND THE WAY.",56,54,1.6f,mutedColor);
+    drawText("LEVEL "+std::to_string(currentLevel+1)+"/"+std::to_string(LEVEL_COUNT)
+             +" - "+levelNames[currentLevel],56,54,1.6f,mutedColor);
     std::string phase="READY";
     Color phaseColor=cyanColor;
     if (gameState==Memorize) { phase="MEMORIZE "+formatTime(memorizeTime)+"S"; phaseColor=goldColor; }
     if (gameState==Playing) { phase=flashTime>0 ? "FLASH" : "LIGHTS OUT"; phaseColor=flashTime>0 ? goldColor : cyanColor; }
-    if (gameState==Won) { phase="ROOM COMPLETE"; phaseColor=greenColor; }
+    if (gameState==Won) { phase=currentLevel==LEVEL_COUNT-1 ? "ALL COMPLETE" : "ROOM COMPLETE"; phaseColor=greenColor; }
     drawText(phase,715,25,2.4f,phaseColor);
     if (gameState==Memorize)
     {
@@ -348,7 +398,9 @@ void drawHUD()
     std::string hint="PRESS ENTER TO START";
     if (gameState==Memorize) hint="REMEMBER THE WALLS, THREE KEYS AND THE EXIT";
     if (gameState==Playing) hint=collectedKeys==3 ? "EXIT UNLOCKED - FIND THE DOOR" : "FIND THREE KEYS, THEN REACH THE EXIT";
-    if (gameState==Won) hint="PRESS ENTER OR R TO TRY AGAIN";
+    if (gameState==Won) hint=currentLevel==LEVEL_COUNT-1
+        ? "ENTER - PLAY FROM LEVEL 1    R - RETRY THIS ROOM"
+        : "ENTER - NEXT LEVEL    R - RETRY THIS ROOM";
     if (messageTime>0) hint=message;
     drawText(hint,80,755,1.9f,gameState==Memorize ? goldColor : textColor);
 }
@@ -361,16 +413,18 @@ void drawOverlay()
     {
         drawCenteredText("CAN YOU REMEMBER THE ROOM?",312,2.5f,textColor);
         drawCenteredText("6 SECONDS TO MEMORIZE. THEN LIGHTS OUT.",363,1.8f,mutedColor);
-        drawCenteredText("FIND 3 KEYS. REMEMBER THE EXIT.",396,1.8f,goldColor);
+        drawCenteredText("3 ROOMS. FIND 3 KEYS IN EACH.",396,1.8f,goldColor);
         drawCenteredText("ONLY 2 SHORT FLASHES OF LIGHT.",426,1.8f,mutedColor);
         drawCenteredText("PRESS ENTER",484,2.6f,cyanColor);
     }
     else
     {
-        drawCenteredText("ROOM COMPLETE!",313,3.5f,greenColor);
+        bool finalLevel=currentLevel==LEVEL_COUNT-1;
+        drawCenteredText(finalLevel ? "ALL ROOMS COMPLETE!" : "ROOM COMPLETE!",313,3.5f,greenColor);
         drawCenteredText("TIME "+formatTime(gameTime)+"S",373,2.5f,textColor);
         drawCenteredText("COLLISIONS "+std::to_string(collisions)+"    FLASHES USED "+std::to_string(MAX_FLASHES-flashesRemaining),419,1.9f,goldColor);
-        drawCenteredText("ENTER / R - PLAY AGAIN",488,2.1f,cyanColor);
+        drawCenteredText(finalLevel ? "ENTER - PLAY AGAIN" : "ENTER - NEXT LEVEL",475,2.1f,cyanColor);
+        drawCenteredText("R - RETRY THIS ROOM",511,1.6f,mutedColor);
     }
 }
 
@@ -458,7 +512,12 @@ void keyCallback(GLFWwindow* window, int key, int, int action, int)
 {
     if (action!=GLFW_PRESS) return;
     if (key==GLFW_KEY_ESCAPE) glfwSetWindowShouldClose(window,true);
-    if (key==GLFW_KEY_ENTER && (gameState==Ready || gameState==Won)) startGame();
+    if (key==GLFW_KEY_ENTER)
+    {
+        if (gameState==Ready) startGame();
+        else if (gameState==Won && !startLevel((currentLevel+1)%LEVEL_COUNT))
+            glfwSetWindowShouldClose(window,true);
+    }
     if (key==GLFW_KEY_R) startGame();
     if (key==GLFW_KEY_SPACE) useFlash();
 }
@@ -498,7 +557,8 @@ int main()
     resizeCallback(window,framebufferWidth,framebufferHeight);
     std::cout << "Memory Room - Daniyal Amangeldi, group 2412\n"
               << "OpenGL: " << glGetString(GL_VERSION) << '\n'
-              << "Enter: start | WASD/arrows: move | Space: flash | R: restart | Esc: quit\n"
+              << "Enter: start / next level | WASD/arrows: move | Space: flash | R: retry room | Esc: quit\n"
+              << "Complete " << LEVEL_COUNT << " rooms. Enter after the final room starts a new game.\n"
               << "Remember the room for 6 seconds. Find three keys and the exit in darkness.\n"
               << std::flush;
     double previousTime=glfwGetTime();

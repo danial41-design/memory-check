@@ -4,7 +4,7 @@ Daniyal Amangeldi — Group 2412
 PROJECT GOAL
 Memory Room is a small 2D puzzle game that tests spatial memory. The player
 remembers a room, then navigates through it when the room becomes dark.
-The project uses a single fixed map and simple C++ functions.
+The project uses three fixed maps and simple C++ functions.
 
 GAMEPLAY
 Press Enter to begin. The room is visible for six seconds, showing the walls,
@@ -14,14 +14,17 @@ and information panel remain visible.
 
 Use WASD or the arrow keys to move. Invisible walls still block the player.
 Keys are collected automatically when the player approaches them. The exit
-can complete the game only after all three keys have been collected.
+can complete the current room only after all three keys have been collected.
 The player has two flashes of light, each lasting half a second. A flash
 briefly reveals the room. Holding Space does not extend the flash.
 
 The panel shows collected keys, remaining flashes, elapsed play time,
 and collision events. Continuous pressure against a wall counts as one
 collision event. On victory, the complete room and results are displayed.
-R restarts the same map and begins a new memorization phase. Escape exits.
+The header shows the current level out of three and its name. Enter after
+victory opens the next room; after room three, it starts again from room one.
+R restarts the current map and begins a new memorization phase. Each new room
+or retry resets keys, flashes, time, and collisions. Escape exits.
 There is no time limit, enemy, or separate losing state.
 
 GRAPHICS AND IMPLEMENTATION
@@ -43,7 +46,7 @@ and key collection. The player uses square-versus-grid collision checks.
 Movement uses frame time, normalized diagonal input, and small steps.
 
 PROJECT SCOPE AND RUNNING
-The game contains one fixed room, three keys, one exit, and four states:
+The game contains three fixed rooms, each with three keys and one exit, and four states:
 Ready, Memorize, Playing, and Won. It uses no game engine or external textures.
 Open MemoryRoom.sln in Visual Studio, select Debug x64, build, and run.
 Alternatively, use run.bat. No command line arguments are required.

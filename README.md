@@ -6,6 +6,12 @@ Daniyal Amangeldi, group 2412
 
 The player sees a room for six seconds and memorizes its walls, three keys, and exit. Then the room becomes dark. Collect all keys and reach the exit using memory. Two short flashes reveal the room for 0.5 seconds each.
 
+## Levels
+
+Complete three fixed rooms in order: **First Steps** (the original map), **Crossroads**, and **Long Way Home**. Each room has its own layout, three keys, and an exit. The current level and its name appear above the board.
+
+After completing a room, press **Enter** to advance. After the third room, Enter starts again from level 1. Press **R** to retry the current room at any time. Every room and retry starts with six seconds to memorize, two flashes, and fresh statistics.
+
 ## Build and run on Windows
 
 1. Open `MemoryRoom.sln` in **Visual Studio**.
@@ -16,10 +22,10 @@ You can also run `build.bat`, then `run.bat`. The project uses C++17, OpenGL 3.3
 
 | Key | Action |
 | --- | --- |
-| Enter | Start or play again after winning |
+| Enter | Start; after winning, advance to the next room or replay from level 1 |
 | W/A/S/D or arrow keys | Move |
 | Space | Use a short flash |
-| R | Restart |
+| R | Restart the current room |
 | Esc | Quit |
 
 The dark phase hides the room geometry while keeping its collision map active. The flashes temporarily draw the room again. See `README_RU.txt` for a detailed explanation in Russian and `PROJECT_DESCRIPTION_EN.txt` for an English overview.
