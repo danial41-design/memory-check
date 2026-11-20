@@ -69,9 +69,14 @@ bool loadLevel()
     int spawnCount=0, exitCount=0;
     for (int row=0; row<MAP_HEIGHT; ++row)
     {
+        if (roomRows[row]==nullptr)
+        {
+            std::cerr << "Missing map row " << row+1 << ".\n"; return false;
+        }
         if (std::strlen(roomRows[row])!=MAP_WIDTH)
         {
-            std::cerr << "Invalid map row width.\n"; return false;
+            std::cerr << "Invalid map row width at row " << row+1
+                      << ": expected " << MAP_WIDTH << " cells.\n"; return false;
         }
         for (int col=0; col<MAP_WIDTH; ++col)
         {
