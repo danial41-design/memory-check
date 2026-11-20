@@ -23,3 +23,11 @@ You can also run `build.bat`, then `run.bat`. The project uses C++17, OpenGL 3.3
 | Esc | Quit |
 
 The dark phase hides the room geometry while keeping its collision map active. The flashes temporarily draw the room again. See `README_RU.txt` for a detailed explanation in Russian and `PROJECT_DESCRIPTION_EN.txt` for an English overview.
+
+## First-play tips
+
+- Click the game window if it does not respond to the keyboard.
+- Use the six-second preview to plan a route through all three keys to the exit. Movement starts after the preview ends.
+- Keys are collected automatically when you approach them; the exit opens only after all three keys are collected.
+- Press Space once per flash. Holding the key does not extend its duration.
+- Press R to try again on the same room layout with both flashes restored.
